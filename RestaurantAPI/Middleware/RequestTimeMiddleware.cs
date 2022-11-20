@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace RestaurantAPI.Middleware
 {
@@ -14,7 +18,6 @@ namespace RestaurantAPI.Middleware
         {
             _logger = logger;
             _stopWatch = new Stopwatch();
-           
         }
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
@@ -22,11 +25,14 @@ namespace RestaurantAPI.Middleware
             await next.Invoke(context);
             _stopWatch.Stop();
 
-            var elapsedMiliseconds = _stopWatch.ElapsedMilliseconds;
-            if (elapsedMiliseconds/1000 > 4)
+            var elapsedMilliseconds = _stopWatch.ElapsedMilliseconds;
+            if (elapsedMilliseconds / 1000 > 4)
             {
-                var message = $"Request [{context.Request.Method}] at {context.Request.Path} took {elapsedMiliseconds} ms";
+                var message =
+                    $"Request [{context.Request.Method}] at {context.Request.Path} took {elapsedMilliseconds} ms";
+
                 _logger.LogInformation(message);
+
             }
 
         }

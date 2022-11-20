@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RestaurantAPI.Models
 {
@@ -12,6 +16,7 @@ namespace RestaurantAPI.Models
         public string City { get; set; }
         public string Street { get; set; }
         public string PostalCode { get; set; }
+
         public List<DishDto> Dishes { get; set; }
     }
 }

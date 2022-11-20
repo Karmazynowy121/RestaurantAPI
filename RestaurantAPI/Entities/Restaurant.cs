@@ -1,7 +1,11 @@
-﻿using RestaurantAPI.Entities;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace RestaurantAPI.Entitis
+namespace RestaurantAPI.Entities
 {
     public class Restaurant
     {
@@ -14,8 +18,10 @@ namespace RestaurantAPI.Entitis
         public string ContactNumber { get; set; }
         public int? CreatedById { get; set; }
         public virtual User CreatedBy { get; set; }
+
         public int AddressId { get; set; }
         public virtual Address Address { get; set; }
+
         public virtual List<Dish> Dishes { get; set; }
 
     }

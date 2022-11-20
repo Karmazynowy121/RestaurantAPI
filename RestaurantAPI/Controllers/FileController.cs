@@ -1,8 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 namespace RestaurantAPI.Controllers
 {
@@ -10,15 +16,15 @@ namespace RestaurantAPI.Controllers
     public class FileController : ControllerBase
     {
         [HttpGet]
-        [ResponseCache(Duration = 1200, VaryByQueryKeys = new[] {"fileName"})]
+        [ResponseCache(Duration = 1200, VaryByQueryKeys = new []{ "fileName"})]
         public ActionResult GetFile([FromQuery] string fileName)
         {
-            var roothPath = Directory.GetCurrentDirectory();
+            var rootPath = Directory.GetCurrentDirectory();
 
-            var filePath = $"{roothPath}/PrivateFiles/{fileName}";
+            var filePath = $"{rootPath}/PrivateFiles/{fileName}";
 
-            var fileExist = System.IO.File.Exists(filePath);
-            if (!fileExist)
+            var fileExists = System.IO.File.Exists(filePath);
+            if (!fileExists)
             {
                 return NotFound();
             }
@@ -43,8 +49,10 @@ namespace RestaurantAPI.Controllers
                 {
                     file.CopyTo(stream);
                 }
+
                 return Ok();
             }
+
             return BadRequest();
         }
     }

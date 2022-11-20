@@ -61,10 +61,7 @@ namespace RestaurantAPI.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("RestaurantId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RestrauntId")
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -72,6 +69,49 @@ namespace RestaurantAPI.Migrations
                     b.HasIndex("RestaurantId");
 
                     b.ToTable("Dishes");
+                });
+
+            modelBuilder.Entity("RestaurantAPI.Entities.Restaurant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasDelivery")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
+                    b.HasIndex("CreatedById");
+
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("RestaurantAPI.Entities.Role", b =>
@@ -126,56 +166,32 @@ namespace RestaurantAPI.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("RestaurantAPI.Entitis.Restaurant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("HasDelivery")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddressId")
-                        .IsUnique();
-
-                    b.HasIndex("CreatedById");
-
-                    b.ToTable("Restaurants");
-                });
-
             modelBuilder.Entity("RestaurantAPI.Entities.Dish", b =>
                 {
-                    b.HasOne("RestaurantAPI.Entitis.Restaurant", "Restaurant")
+                    b.HasOne("RestaurantAPI.Entities.Restaurant", "Restaurant")
                         .WithMany("Dishes")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("RestaurantAPI.Entities.Restaurant", b =>
+                {
+                    b.HasOne("RestaurantAPI.Entities.Address", "Address")
+                        .WithOne("Restaurant")
+                        .HasForeignKey("RestaurantAPI.Entities.Restaurant", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RestaurantAPI.Entities.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("RestaurantAPI.Entities.User", b =>
@@ -189,29 +205,12 @@ namespace RestaurantAPI.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("RestaurantAPI.Entitis.Restaurant", b =>
-                {
-                    b.HasOne("RestaurantAPI.Entities.Address", "Address")
-                        .WithOne("Restaurant")
-                        .HasForeignKey("RestaurantAPI.Entitis.Restaurant", "AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RestaurantAPI.Entities.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.Navigation("Address");
-
-                    b.Navigation("CreatedBy");
-                });
-
             modelBuilder.Entity("RestaurantAPI.Entities.Address", b =>
                 {
                     b.Navigation("Restaurant");
                 });
 
-            modelBuilder.Entity("RestaurantAPI.Entitis.Restaurant", b =>
+            modelBuilder.Entity("RestaurantAPI.Entities.Restaurant", b =>
                 {
                     b.Navigation("Dishes");
                 });

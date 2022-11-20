@@ -1,13 +1,17 @@
-﻿using RestaurantAPI.Entities;
-using RestaurantAPI.Entitis;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using RestaurantAPI.Entities;
 
 namespace RestaurantAPI
 {
-    public class RestaurantSeeder        
+    public class RestaurantSeeder
     {
         private readonly RestaurantDbContext _dbContext;
+
         public RestaurantSeeder(RestaurantDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -16,6 +20,12 @@ namespace RestaurantAPI
         {
             if (_dbContext.Database.CanConnect())
             {
+                var pendingMigrations = _dbContext.Database.GetPendingMigrations();
+                if(pendingMigrations != null && pendingMigrations.Any())
+                {
+                    _dbContext.Database.Migrate();
+                }
+
                 if (!_dbContext.Roles.Any())
                 {
                     var roles = GetRoles();
@@ -31,6 +41,7 @@ namespace RestaurantAPI
                 }
             }
         }
+
         private IEnumerable<Role> GetRoles()
         {
             var roles = new List<Role>()
@@ -41,25 +52,27 @@ namespace RestaurantAPI
                 },
                 new Role()
                 {
-                    Name = "Manager"
-                },
+                Name = "Manager"
+            },
                 new Role()
                 {
                     Name = "Admin"
                 },
-
             };
+
             return roles;
         }
+
         private IEnumerable<Restaurant> GetRestaurants()
         {
-            var restaurants = new List<Restaurant>();
+            var restaurants = new List<Restaurant>()
             {
-                new Restaurant
+                new Restaurant()
                 {
                     Name = "KFC",
                     Category = "Fast Food",
-                    Description = "KFC (short for Kentucky Fried Chicken) is American fast food restaurant chain headquartered",
+                    Description =
+                        "KFC (short for Kentucky Fried Chicken) is an American fast food restaurant chain headquartered in Louisville, Kentucky, that specializes in fried chicken.",
                     ContactEmail = "contact@kfc.com",
                     HasDelivery = true,
                     Dishes = new List<Dish>()
@@ -69,6 +82,7 @@ namespace RestaurantAPI
                             Name = "Nashville Hot Chicken",
                             Price = 10.30M,
                         },
+
                         new Dish()
                         {
                             Name = "Chicken Nuggets",
@@ -79,44 +93,27 @@ namespace RestaurantAPI
                     {
                         City = "Kraków",
                         Street = "Długa 5",
-                        PostalCode = "30-001",
+                        PostalCode = "30-001"
                     }
-                };
-                new Restaurant
+                },
+                new Restaurant()
                 {
-                    Name = "McDonald",
+                    Name = "McDonald Szewska",
                     Category = "Fast Food",
-                    Description = "McDonald fast food restaurant with burgers and french fries",
-                    ContactEmail = "contact@McDonald.com",
+                    Description =
+                        "McDonald's Corporation (McDonald's), incorporated on December 21, 1964, operates and franchises McDonald's restaurants.",
+                    ContactEmail = "contact@mcdonald.com",
                     HasDelivery = true,
-                    Dishes = new List<Dish>()
-                    {
-                        new Dish()
-                        {
-                            Name = "McChicken",
-                            Price = 5.00M,
-                        },
-                        new Dish()
-                        {
-                            Name = "Maestro",
-                            Price = 21.37M,
-                        },
-                    },
                     Address = new Address()
                     {
                         City = "Kraków",
-                        Street = "Krótka 12",
-                        PostalCode = "30-001",
+                        Street = "Szewska 2",
+                        PostalCode = "30-001"
                     }
-                };
+                }
+            };
 
-
-
-
-
-                return restaurants;
-                
-            }
+            return restaurants;
         }
     }
 }
